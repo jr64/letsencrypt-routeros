@@ -14,6 +14,11 @@ chmod 600 secrets/cloudflare-creds.ini
 vim secrets/cloudflare-creds.ini
 ```
 
+Write the Mikrotik device's SSH hostkey to a file that can be mounted inside the container.
+```
+ssh-keyscan mikrotik.local > known_hosts
+```
+
 Edit docker-compose.yml, adapt configuration to your environment:
 ```sh
 cp docker-compose.example.yml docker-compose.yml
