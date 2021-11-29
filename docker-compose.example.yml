@@ -1,0 +1,33 @@
+version: '3.1'
+services:
+
+    lero:
+        build: .
+        restart: always
+        image: localhost/letsencrypt-routeros:latest
+        volumes:
+            - lero_certs:/etc/letsencrypt
+            - lero_data:/var/lib/letsencrypt
+            - ./known_hosts:/root/.ssh/known_hosts
+        secrets:
+            - lero_cloudflare_creds
+            - lero_mikrotik_key
+        environment:
+            - ROUTEROS_USER=certbot                                 # user used to connect to mikrotik device
+            - ROUTEROS_HOST=mikrotik.local                          # host to SSH into
+            - ROUTEROS_SSH_PORT=22                                  # port to use for SSH
+            - ROUTEROS_PRIVATE_KEY=/run/secrets/lero_mikrotik_key   # path to private key for authentication
+            - DOMAIN=mikrotik.local                                 # domain to put into certificate
+            - EMAIL=me@example.com                                  # let's encrypt account email
+            - CLOUDFLARE_CREDS=/run/secrets/lero_cloudflare_creds   # path to cloudflare api credential ini file
+            - RENEW_INTERVAL=10800                                  # check if certificate is expired every N seconds
+volumes:
+    lero_certs:
+    lero_data:
+secrets:
+    lero_cloudflare_creds:
+        file: secrets/cloudflare-creds.ini
+    lero_mikrotik_key.pub:
+        file: secrets/id_rsa.pub
+    lero_mikrotik_key:
+        file: secrets/id_rsa

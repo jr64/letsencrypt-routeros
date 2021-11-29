@@ -2,8 +2,9 @@
 CONFIG_FILE=letsencrypt-routeros.settings
 
 if [[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]] || [[ -z $4 ]] || [[ -z $5 ]]; then
-        echo -e "Usage: $0 or $0 [RouterOS User] [RouterOS Host] [SSH Port] [SSH Private Key] [Domain]\n"
-        source $CONFIG_FILE
+        if [ -f $CONFIG_FILE ]; then
+                source $CONFIG_FILE
+        fi
 else
         ROUTEROS_USER=$1
         ROUTEROS_HOST=$2
@@ -73,7 +74,9 @@ $routeros /certificate import file-name=$DOMAIN.key passphrase=\"\"
 # Delete Certificate file after import
 $routeros /file remove $DOMAIN.key
 
-# Setup Certificate to SSTP Server
+# Setup Certificate to SSTP Server, www-ssl and api-ssl
 $routeros /interface sstp-server server set certificate=$DOMAIN.pem_0
+$routeros /ip service set www-ssl certificate=$DOMAIN.pem_0
+$routeros /ip service set api-ssl certificate=$DOMAIN.pem_0
 
 exit 0
