@@ -40,7 +40,6 @@ scp secrets/id_rsa.pub admin@mikrotik.local:
 Make sure you have created an additional user (called "certbot" here) and enabled ssh.
 
 ```sh
-:put "Add to the user DSA Public Key"
 /user ssh-keys import user=certbot public-key-file=id_rsa.pub
 ```
 
